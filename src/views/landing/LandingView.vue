@@ -997,11 +997,6 @@ const store = useTemplateStore();
     <div id="one-vue-call-to-action" class="bg-body-extra-light">
       <div class="content content-full">
         <div class="py-5 py-md-8 text-center">
-          <h2 class="fw-bold mb-2">
-            Crafted with
-            <i class="fa fa-fw fa-heart text-city"></i> by
-            <a class="link-fx" href="https://1.envato.market/ydb">pixelcave</a>
-          </h2>
           <p class="fs-lg fw-medium text-muted mb-4">
             Passionate web design and development with over 15,000 customers
             worldwide.
@@ -1031,13 +1026,6 @@ const store = useTemplateStore();
     <footer id="page-footer" class="bg-body-light">
       <div class="content py-5">
         <div class="row fs-sm fw-medium">
-          <div class="col-sm-6 order-sm-2 py-1 text-center text-sm-end">
-            Crafted with
-            <i class="fa fa-heart text-danger"></i> by
-            <a class="fw-semibold" href="https://1.envato.market/ydb"
-              >pixelcave</a
-            >
-          </div>
           <div class="col-sm-6 order-sm-1 py-1 text-center text-sm-start">
             <a class="fw-semibold" href="https://1.envato.market/AVD6j">{{
               store.app.name + " " + store.app.version
