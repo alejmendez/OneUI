@@ -9,11 +9,12 @@ defineProps({
   <div class="participant border-bottom">
     <span class="participant-name">
       {{ participant.name }}
+      {{ participant.tiempo !== 0 ? participant.tiempo : null}}
     </span>
 
     <button
       class="btn btn-sm btn-primary float-end"
-      @click="$emit('participantListo', participant)"
+      @click="$emit('setParticipantAsReady', participant)"
     >
       listo
     </button>

@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, watch, computed } from "vue";
 import Participant from "./components/Participant.vue";
 
 let state = reactive({
@@ -75,27 +75,42 @@ let state = reactive({
       tiempo: 0,
     },
   ],
+   currentTime: 0,
+   enabledTime: false,
+   interval: null
 });
 
-const participantsPendiente = computed(() => {
+const pendingParticipants = computed(() => {
   return state.participants.filter(
     (participant) => participant.status === "pendiente"
   );
 });
-const participantsListos = computed(() => {
+const readyParticipants = computed(() => {
   return state.participants.filter(
     (participant) => participant.status === "listo"
   );
 });
 
-function participantListo(participant) {
+function enabledTime() {
+  if(state.enabledTime) {
+    state.interval = setInterval(() => {state.currentTime ++}, 1000);
+  } else {
+    if (state.interval !== null) clearInterval(state.interval);
+  }
+}
+
+watch(() => ({ ...state.enabledTime }), enabledTime)
+
+function setParticipantAsReady(participant) {
   const index = state.participants.findIndex(
     (p) => p.name === participant.name
   );
   state.participants[index].status = "listo";
-
-  console.log({ participantsPendiente });
-  console.log({ participantsListos });
+  state.participants[index].tiempo = state.currentTime
+  state.currentTime = 0;
+  state.enabledTime = true;
+  console.log({ pendingParticipants });
+  console.log({ readyParticipants });
 }
 </script>
 
@@ -106,15 +121,23 @@ function participantListo(participant) {
 
   <div class="content">
     <div class="row items-push">
+      <div class="col-sm-12 align-items">
+        <BaseBlock title="Tiempo" class="h-100 mb-0">
+          <p>{{state.currentTime}}</p>
+          <button @click="state.enabledTime ? state.enabledTime = false : state.enabledTime = true;">
+            {{state.enabledTime ? "Detener" : "Comenzar"}}
+          </button>
+        </BaseBlock>
+      </div>
       <div class="col-sm-12">
         <BaseBlock title="Pendientes" class="h-100 mb-0">
           <template
-            v-for="participant in participantsPendiente"
+            v-for="participant in pendingParticipants"
             :key="participant.name"
           >
             <Participant
               :participant="participant"
-              @participantListo="participantListo"
+              @setParticipantAsReady="setParticipantAsReady"
             />
           </template>
         </BaseBlock>
@@ -122,7 +145,7 @@ function participantListo(participant) {
       <div class="col-sm-12">
         <BaseBlock title="Listos" class="h-100 mb-0">
           <template
-            v-for="participant in participantsListos"
+            v-for="participant in readyParticipants"
             :key="participant.name"
           >
             <Participant :participant="participant" />
