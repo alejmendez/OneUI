@@ -11,6 +11,7 @@ const Landing = () => import("@/views/starter/LandingView.vue");
 
 // Backend: Dashboard
 const Dashboard = () => import("@/views/starter/DashboardView.vue");
+const Board = () => import("@/views/starter/BoardView.vue");
 
 // Set all routes
 const routes = [
@@ -34,6 +35,17 @@ const routes = [
         path: "dashboard",
         name: "backend-dashboard",
         component: Dashboard,
+      },
+    ],
+  },
+  {
+    path: "/board",
+    component: LayoutSimple,
+    children: [
+      {
+        path: "",
+        name: "board",
+        component: Board,
       },
     ],
   },

@@ -213,6 +213,8 @@ const Error404 = () => import("@/views/errors/404View.vue");
 const Error500 = () => import("@/views/errors/500View.vue");
 const Error503 = () => import("@/views/errors/503View.vue");
 
+const Board = () => import("@/views/board/BoardView.vue");
+
 // Set all routes
 const routes = [
   /*
@@ -230,6 +232,17 @@ const routes = [
         path: "",
         name: "landing",
         component: Landing,
+      },
+    ],
+  },
+  {
+    path: "/board",
+    component: LayoutBackend,
+    children: [
+      {
+        path: "/board",
+        name: "board",
+        component: Board,
       },
     ],
   },
