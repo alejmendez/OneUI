@@ -18,6 +18,9 @@ import clickRipple from "@/directives/clickRipple";
 import * as bootstrap from "bootstrap";
 window.bootstrap = bootstrap;
 
+// Libs
+import { initFontAwesome } from "@/lib/font-awesome";
+
 // Craft new application
 const app = createApp(App);
 
@@ -25,6 +28,8 @@ const app = createApp(App);
 app.component("BaseBlock", BaseBlock);
 app.component("BaseBackground", BaseBackground);
 app.component("BasePageHeading", BasePageHeading);
+
+initFontAwesome(app);
 
 // Register global directives
 app.directive("click-ripple", clickRipple);

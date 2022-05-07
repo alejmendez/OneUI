@@ -1,116 +1,84 @@
 <script setup>
-import { reactive, watch, computed } from "vue";
+import { reactive, ref, computed } from "vue";
+import { intToTime } from "@/lib/time";
+import { StatusTypes, getParticipants } from "@/services/board";
 import Participant from "./components/Participant.vue";
 
+let interval = null;
+let timer = ref(0);
+let currentParticipant = null;
+
 let state = reactive({
-  participants: [
-    {
-      name: "Alejandro Mendez",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Carlos Mujica",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "César Encina",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Cristian Mendoza",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Daniela Pellegrini",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Enrique Cruz",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Jean Pierre Rodríguez",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Joaquin Couyoumdjian",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Jorge Montero",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "José Lara",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Julio Arismendi",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Natalia Sandoval",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Ramiro Galvez",
-      status: "pendiente",
-      tiempo: 0,
-    },
-    {
-      name: "Valentina Contreras",
-      status: "pendiente",
-      tiempo: 0,
-    },
-  ],
-   currentTime: 0,
-   enabledTime: false,
-   interval: null
+  participants: getParticipants(),
 });
+
+//.sort(function(a, b){return a - b});
 
 const pendingParticipants = computed(() => {
-  return state.participants.filter(
-    (participant) => participant.status === "pendiente"
+  return state.participants.filter((participant) =>
+    [StatusTypes.PENDING, StatusTypes.IN_PROGRESS].includes(participant.status)
   );
 });
+
 const readyParticipants = computed(() => {
   return state.participants.filter(
-    (participant) => participant.status === "listo"
+    (participant) => participant.status === StatusTypes.READY
   );
 });
 
-function enabledTime() {
-  if(state.enabledTime) {
-    state.interval = setInterval(() => {state.currentTime ++}, 1000);
-  } else {
-    if (state.interval !== null) clearInterval(state.interval);
+const totalTime = computed(() => {
+  return intToTime(
+    state.participants
+      .filter((participant) => participant.status === StatusTypes.READY)
+      .reduce((previousValue, participant) => {
+        return previousValue + participant.time;
+      }, 0)
+  );
+});
+
+const initTimer = (initialTime = 0) => {
+  timer.value = initialTime;
+  interval = setInterval(() => {
+    timer.value++;
+    currentParticipant.time = timer.value;
+  }, 1000);
+};
+
+const endTimer = () => {
+  clearInterval(interval);
+};
+
+const getParticipant = (participantId) => {
+  return state.participants.find(
+    (participant) => participant.id === participantId
+  );
+};
+
+function startTime(participant) {
+  if (currentParticipant) {
+    currentParticipant.status = StatusTypes.PENDING;
+    endTimer();
   }
+  currentParticipant = getParticipant(participant.id);
+  currentParticipant.status = StatusTypes.IN_PROGRESS;
+  initTimer(currentParticipant.time);
 }
 
-watch(() => ({ ...state.enabledTime }), enabledTime)
-
 function setParticipantAsReady(participant) {
-  const index = state.participants.findIndex(
-    (p) => p.name === participant.name
-  );
-  state.participants[index].status = "listo";
-  state.participants[index].tiempo = state.currentTime
-  state.currentTime = 0;
-  state.enabledTime = true;
-  console.log({ pendingParticipants });
-  console.log({ readyParticipants });
+  currentParticipant = getParticipant(participant.id);
+  currentParticipant.status = StatusTypes.READY;
+  currentParticipant = null;
+  endTimer();
+}
+
+function setParticipantAsNotReady(participant) {
+  currentParticipant = getParticipant(participant.id);
+  currentParticipant.status = StatusTypes.PENDING;
+  currentParticipant.time = 0;
+}
+
+function shuffleParticipants() {
+  state.participants = state.participants.sort(() => Math.random() - 0.5);
 }
 </script>
 
@@ -121,34 +89,39 @@ function setParticipantAsReady(participant) {
 
   <div class="content">
     <div class="row items-push">
-      <div class="col-sm-12 align-items">
-        <BaseBlock title="Tiempo" class="h-100 mb-0">
-          <p>{{state.currentTime}}</p>
-          <button @click="state.enabledTime ? state.enabledTime = false : state.enabledTime = true;">
-            {{state.enabledTime ? "Detener" : "Comenzar"}}
-          </button>
-        </BaseBlock>
-      </div>
       <div class="col-sm-12">
         <BaseBlock title="Pendientes" class="h-100 mb-0">
+          <template v-slot:options>
+            <button
+              type="button"
+              class="btn-block-option"
+              @click="shuffleParticipants"
+            >
+              <font-awesome-icon :icon="['fas', 'random']" />
+            </button>
+          </template>
           <template
             v-for="participant in pendingParticipants"
-            :key="participant.name"
+            :key="participant.id"
           >
             <Participant
               :participant="participant"
+              @startTime="startTime"
               @setParticipantAsReady="setParticipantAsReady"
             />
           </template>
         </BaseBlock>
       </div>
       <div class="col-sm-12">
-        <BaseBlock title="Listos" class="h-100 mb-0">
+        <BaseBlock title="Listos" :subtitle="totalTime" class="h-100 mb-0">
           <template
             v-for="participant in readyParticipants"
-            :key="participant.name"
+            :key="participant.id"
           >
-            <Participant :participant="participant" />
+            <Participant
+              :participant="participant"
+              @setParticipantAsNotReady="setParticipantAsNotReady"
+            />
           </template>
         </BaseBlock>
       </div>
