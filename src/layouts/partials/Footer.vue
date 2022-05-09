@@ -17,9 +17,9 @@ const store = useTemplateStore();
               <slot name="content-left">
                 <a
                   class="fw-semibold"
-                  href="https://1.envato.market/AVD6j"
+                  href="https://mycompany.com"
                   target="_blank"
-                  >{{ store.app.name + " " + store.app.version }}</a
+                  >mycompany.cl</a
                 >
                 &copy; {{ store.app.copyright }}
               </slot>
