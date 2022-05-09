@@ -7,94 +7,32 @@ const StatusTypes = {
 };
 
 const participants = [
-  {
-    id: uuidv4(),
-    name: "Alejandro Mendez",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Carlos Mujica",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "César Encina",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Cristian Mendoza",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Daniela Pellegrini",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Enrique Cruz",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Jean Pierre Rodríguez",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Joaquin Couyoumdjian",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Jorge Montero",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "José Lara",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Julio Arismendi",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Natalia Sandoval",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Ramiro Galvez",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
-  {
-    id: uuidv4(),
-    name: "Valentina Contreras",
-    status: StatusTypes.PENDING,
-    time: 0,
-  },
+  "César Encina",
+  "Alejandro Mendez",
+  "Edgar Ramos",
+  "Cristian Mendoza",
+  "Carlos Mujica",
+  "Daniela Pellegrini",
+  "Enrique Cruz",
+  "Joaquin Couyoumdjian",
+  "José Lara",
+  "Jorge Montero",
+  "Jean Pierre Rodríguez",
+  "Natalia Sandoval",
+  "Ramiro Galvez",
+  "Valentina Contreras",
+  "Julio Arismendi",
 ];
 
 const getParticipants = () => {
-  return participants;
+  return participants.map((name) => {
+    return {
+      id: uuidv4(),
+      name,
+      status: StatusTypes.PENDING,
+      time: 0,
+    };
+  });
 };
 
 export { StatusTypes, getParticipants };

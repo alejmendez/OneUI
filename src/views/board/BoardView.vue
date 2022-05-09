@@ -89,7 +89,7 @@ function shuffleParticipants() {
 
   <div class="content">
     <div class="row items-push">
-      <div class="col-sm-12">
+      <div class="col-md-6 col-sm-12">
         <BaseBlock title="Pendientes" class="h-100 mb-0">
           <template v-slot:options>
             <button
@@ -112,7 +112,7 @@ function shuffleParticipants() {
           </template>
         </BaseBlock>
       </div>
-      <div class="col-sm-12">
+      <div class="col-md-6 col-sm-12">
         <BaseBlock title="Listos" :subtitle="totalTime" class="h-100 mb-0">
           <template
             v-for="participant in readyParticipants"
