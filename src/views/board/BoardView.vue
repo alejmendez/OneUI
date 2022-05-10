@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
 import { intToTime } from "@/lib/time";
 import { StatusTypes, getParticipants } from "@/services/board";
 import Participant from "./components/Participant.vue";
@@ -8,11 +8,11 @@ let interval = null;
 let timer = ref(0);
 let currentParticipant = null;
 
-let state = reactive({
-  participants: getParticipants(),
-});
+const pendientesBlock = ref(null);
 
-//.sort(function(a, b){return a - b});
+let state = reactive({
+  participants: [],
+});
 
 const pendingParticipants = computed(() => {
   return state.participants.filter((participant) =>
@@ -80,6 +80,12 @@ function setParticipantAsNotReady(participant) {
 function shuffleParticipants() {
   state.participants = state.participants.sort(() => Math.random() - 0.5);
 }
+
+onMounted(async () => {
+  pendientesBlock.value.statusLoading();
+  state.participants = await getParticipants();
+  pendientesBlock.value.statusNormal();
+});
 </script>
 
 <template>
@@ -90,7 +96,7 @@ function shuffleParticipants() {
   <div class="content">
     <div class="row items-push">
       <div class="col-md-6 col-sm-12">
-        <BaseBlock title="Pendientes" class="h-100 mb-0">
+        <BaseBlock title="Pendientes" class="h-100 mb-3" ref="pendientesBlock">
           <template v-slot:options>
             <button
               type="button"
@@ -113,7 +119,7 @@ function shuffleParticipants() {
         </BaseBlock>
       </div>
       <div class="col-md-6 col-sm-12">
-        <BaseBlock title="Listos" :subtitle="totalTime" class="h-100 mb-0">
+        <BaseBlock title="Listos" :subtitle="totalTime" class="h-100 mb-3">
           <template
             v-for="participant in readyParticipants"
             :key="participant.id"

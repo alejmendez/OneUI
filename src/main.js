@@ -20,6 +20,7 @@ window.bootstrap = bootstrap;
 
 // Libs
 import { initFontAwesome } from "@/lib/font-awesome";
+import { initFirebase } from "@/lib/firebase";
 
 // Craft new application
 const app = createApp(App);
@@ -30,6 +31,7 @@ app.component("BaseBackground", BaseBackground);
 app.component("BasePageHeading", BasePageHeading);
 
 initFontAwesome(app);
+initFirebase();
 
 // Register global directives
 app.directive("click-ripple", clickRipple);

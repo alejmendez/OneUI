@@ -9,8 +9,9 @@ defineProps({
 });
 </script>
 <template>
-  <div class="participant border-bottom">
-    <span class="participant-name">
+  <div class="participant">
+    <font-awesome-icon :icon="['fas', 'user']" />
+    <span class="participant-name ms-3">
       {{ participant.name }}
     </span>
 
@@ -58,10 +59,10 @@ defineProps({
 </template>
 <style lang="scss" scoped>
 .participant {
-  padding: 4px 6px;
+  padding: 6px 6px;
 
   .participant-name {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
   }
 
