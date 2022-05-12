@@ -11,7 +11,6 @@ const getParticipants = async () => {
   const db = getFirestore();
   const participantsSnapshot = await getDocs(collection(db, "participants"));
   const participantsList = participantsSnapshot.docs.map((doc) => doc.data());
-  console.log(participantsList);
   const result = participantsList
     .map((participant) => {
       return {

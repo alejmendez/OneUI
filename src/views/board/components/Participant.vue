@@ -9,7 +9,7 @@ defineProps({
 });
 </script>
 <template>
-  <div class="participant">
+  <div class="participant rounded my-2">
     <font-awesome-icon :icon="['fas', 'user']" />
     <span class="participant-name ms-3">
       {{ participant.name }}
@@ -18,37 +18,46 @@ defineProps({
     <template v-if="participant.status === StatusTypes.PENDING">
       <button
         class="btn btn-sm btn-primary float-end"
-        v-if="participant.status === StatusTypes.PENDING"
+        title="Start"
         @click="$emit('startTime', participant)"
       >
         <font-awesome-icon :icon="['fas', 'play']" />
-        Start
       </button>
 
       <button
         class="btn btn-sm btn-success float-end me-2"
+        title="Ready"
         @click="$emit('setParticipantAsReady', participant)"
       >
-        Ready
+        <font-awesome-icon :icon="['fas', 'check']" />
       </button>
     </template>
 
     <template v-if="participant.status === StatusTypes.IN_PROGRESS">
       <button
-        class="btn btn-sm btn-warning float-end setParticipantAsReady"
+        class="btn btn-sm btn-warning float-end"
         @click="$emit('setParticipantAsReady', participant)"
       >
         <font-awesome-icon :icon="['fas', 'stop']" />
-        Stop [{{ intToTime(participant.time) }}]
       </button>
+      <span class="badge bg-secondary float-end me-2 mt-1 badge-time">
+        <div class="float-start" style="width: 12px">
+          <font-awesome-icon
+            class="spinner-hourglass"
+            :icon="['fas', 'hourglass']"
+          />
+        </div>
+        {{ intToTime(participant.time) }}
+      </span>
     </template>
 
     <template v-if="participant.status === StatusTypes.READY">
       <button
         class="btn btn-sm btn-info float-end"
+        title="Set as not ready"
         @click="$emit('setParticipantAsNotReady', participant)"
       >
-        Set as not ready
+        <font-awesome-icon :icon="['fas', 'undo']" />
       </button>
       <span class="badge bg-secondary float-end me-2 mt-1 badge-time">
         <font-awesome-icon :icon="['fas', 'calendar-check']" />
@@ -59,19 +68,37 @@ defineProps({
 </template>
 <style lang="scss" scoped>
 .participant {
-  padding: 6px 6px;
+  padding: 12px 18px;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: #11161e;
+  }
+
+  .btn-sm {
+    padding: 0.18rem 0.5rem;
+  }
 
   .participant-name {
     font-size: 1.1rem;
     font-weight: bold;
   }
 
-  .setParticipantAsReady {
-    width: 135px;
+  .badge-time {
+    width: 70px;
   }
 
-  .badge-time {
-    width: 65px;
+  .spinner-hourglass {
+    animation: rotation 2s infinite linear;
+  }
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
   }
 }
 </style>

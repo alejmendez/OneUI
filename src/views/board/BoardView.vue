@@ -96,8 +96,13 @@ onMounted(async () => {
   <div class="content">
     <div class="row items-push">
       <div class="col-md-6 col-sm-12">
-        <BaseBlock title="Pendientes" class="h-100 mb-3" ref="pendientesBlock">
-          <template v-slot:options>
+        <BaseBlock class="h-100 mb-3" ref="pendientesBlock">
+          <template #title>
+            <font-awesome-icon :icon="['fas', 'users']" /> Participants ({{
+              pendingParticipants.length
+            }})
+          </template>
+          <template #options>
             <button
               type="button"
               class="btn-block-option"
@@ -119,7 +124,15 @@ onMounted(async () => {
         </BaseBlock>
       </div>
       <div class="col-md-6 col-sm-12">
-        <BaseBlock title="Listos" :subtitle="totalTime" class="h-100 mb-3">
+        <BaseBlock class="h-100 mb-3">
+          <template #title>
+            <font-awesome-icon :icon="['fas', 'calendar-check']" /> Readies ({{
+              readyParticipants.length
+            }})
+          </template>
+          <template #subtitle>
+            <small>Total time {{ totalTime }}</small>
+          </template>
           <template
             v-for="participant in readyParticipants"
             :key="participant.id"
