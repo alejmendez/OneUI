@@ -56,7 +56,7 @@ const getParticipant = (participantId) => {
 
 function startTime(participant) {
   if (currentParticipant) {
-    currentParticipant.status = StatusTypes.PENDING;
+    currentParticipant.status = StatusTypes.READY;
     endTimer();
   }
   currentParticipant = getParticipant(participant.id);
@@ -65,10 +65,9 @@ function startTime(participant) {
 }
 
 function setParticipantAsReady(participant) {
-  currentParticipant = getParticipant(participant.id);
-  currentParticipant.status = StatusTypes.READY;
-  currentParticipant = null;
-  endTimer();
+  participant = getParticipant(participant.id);
+  participant.status = StatusTypes.READY;
+  participant = null;
 }
 
 function setParticipantAsNotReady(participant) {

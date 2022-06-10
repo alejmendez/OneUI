@@ -1,12 +1,15 @@
 <script setup>
+import { ref } from "vue";
 import { intToTime } from "@/lib/time";
 import { StatusTypes } from "@/services/board";
 
-defineProps({
+const props = defineProps({
   participant: {
     type: Object,
   },
 });
+
+const participantFirstName = ref(props.participant.name.split(" ").shift());
 </script>
 <template>
   <div class="participant rounded my-2">
@@ -59,7 +62,10 @@ defineProps({
       >
         <font-awesome-icon :icon="['fas', 'undo']" />
       </button>
-      <span class="badge bg-secondary float-end me-2 mt-1 badge-time">
+      <span
+        class="badge bg-secondary float-end me-2 mt-1 badge-time"
+        :title="participantFirstName + '\'s total time'"
+      >
         <font-awesome-icon :icon="['fas', 'calendar-check']" />
         {{ intToTime(participant.time) }}
       </span>

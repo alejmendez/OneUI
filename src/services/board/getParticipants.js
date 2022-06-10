@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 const StatusTypes = {
   PENDING: "pending",
@@ -7,21 +6,37 @@ const StatusTypes = {
   READY: "ready",
 };
 
+const participantsList = [
+  "César Encina",
+  "Alejandro Mendez",
+  "Edgar Ramos",
+  "Cristian Mendoza",
+  "Carlos Mujica",
+  "Daniela Pellegrini",
+  "Enrique Cruz",
+  "José Lara",
+  "Jorge Montero",
+  "Jean Pierre Rodríguez",
+  "Natalia Sandoval",
+  "Ramiro Galvez",
+  "Sebastián He",
+  "Valentina Contreras",
+  "Diego Marin",
+  "Julio Arismendi",
+  "Joaquin Couyoumdjian",
+];
+
 const getParticipants = async () => {
-  const db = getFirestore();
-  const participantsSnapshot = await getDocs(collection(db, "participants"));
-  const participantsList = participantsSnapshot.docs.map((doc) => doc.data());
-  const result = participantsList
+  return participantsList
     .map((participant) => {
       return {
         id: uuidv4(),
-        name: participant.name,
+        name: participant,
         status: StatusTypes.PENDING,
         time: 0,
       };
     })
     .sort((a, b) => a.name.localeCompare(b.name));
-  return result;
 };
 
 export { StatusTypes, getParticipants };
