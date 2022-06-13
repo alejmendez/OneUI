@@ -10,6 +10,7 @@ import {
   faUser,
   faUsers,
   faHourglass,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faPlay);
@@ -21,6 +22,7 @@ library.add(faRandom);
 library.add(faUser);
 library.add(faUsers);
 library.add(faHourglass);
+library.add(faClock);
 
 export const initFontAwesome = (VueInstance) => {
   VueInstance.component("font-awesome-icon", FontAwesomeIcon);
