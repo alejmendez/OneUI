@@ -7,12 +7,7 @@
 export default {
   main: [
     {
-      name: "Dashboard",
-      to: "backend-dashboard",
-      icon: "si si-speedometer",
-    },
-    {
-      name: "Board",
+      name: "Tablero de daily's",
       to: "board",
       icon: "si si-speedometer",
     },
