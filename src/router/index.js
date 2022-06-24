@@ -4,11 +4,11 @@ import NProgress from "nprogress/nprogress.js";
 
 // Main layout variations
 import LayoutSimple from "@/layouts/variations/Simple.vue";
-import LayoutLanding from "@/layouts/variations/Landing.vue";
+// import LayoutLanding from "@/layouts/variations/Landing.vue";
 import LayoutBackend from "@/layouts/variations/Backend.vue";
 
 // Frontend: Landing
-const Landing = () => import("@/views/landing/LandingView.vue");
+// const Landing = () => import("@/views/landing/LandingView.vue");
 
 // Backend: Dashboard
 const BackendDashboard = () => import("@/views/backend/DashboardView.vue");
@@ -50,12 +50,12 @@ const Board = () => import("@/views/board/BoardView.vue");
 const routes = [
   {
     path: "/",
-    component: LayoutLanding,
+    component: LayoutBackend,
     children: [
       {
         path: "",
         name: "landing",
-        component: Landing,
+        component: Board,
       },
     ],
   },
