@@ -10,6 +10,18 @@ This template should help get you started developing with Vue 3 in Vite.
 
 See [Vite Configuration Reference](https://vitejs.dev/config/).
 
+## Documentación del template
+https://demo.pixelcave.com/oneui-vue-edition/#/backend/blocks/api
+
+## Como pushear cambios a heroku
+```
+heroku buildpacks:add heroku/nodejs
+heroku buildpacks:add https://github.com/heroku/heroku-buildpack-static
+git push heroku master
+```
+
+https://cli.vuejs.org/guide/deployment.html#heroku
+
 ## Project Setup
 
 ```sh
