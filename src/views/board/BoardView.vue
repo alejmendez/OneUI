@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref, computed, onMounted } from "vue";
-import { intToTime } from "@/lib/time";
+import { intToTime, getMinutesfromInt, getSecondsfromInt, getTwoDigitNumber} from "@/lib/time";
 import { StatusTypes, getParticipants } from "@/services/board";
 import Participant from "./components/Participant.vue";
 
@@ -8,19 +8,22 @@ import Participant from "./components/Participant.vue";
 let timer = ref(0);
 let intervalTime = null;
 // Tiempo sugerido que tendrá cada participante en su turno
-// Hacemos que sea reactivo para que en un futuro se pueda editar
 let countdown = ref(90);
 // Tiempo restante que le queda al participante actual, se reinicia
 // al empezar el turno de otro participante
 let timeLeft = ref(90);
 let intervalTimeLeft = null;
 
-
 const pendientesBlock = ref(null);
 
 let state = reactive({
   participants: [],
   currentParticipant: null,
+  editingSuggestedTime: true,
+  totalTimeEdit: null, // "mm:ss"
+  totalSecondsEdit: null, // cantidad de segundos en edición
+  minEditTime: null, // string minutes edición
+  secEditTime: null, // string seconds edición
 });
 
 const pendingParticipants = computed(() => {
@@ -99,22 +102,79 @@ function shuffleParticipants() {
   state.participants = state.participants.sort(() => Math.random() - 0.5);
 }
 
+function toggleTimeEdit() {
+  console.log(state.editingSuggestedTime)
+  state.editingSuggestedTime = !state.editingSuggestedTime;
+  console.log(state.editingSuggestedTime)
+}
+
+// cambiar a watcher de los dos inputs
+function changeCountdown(e, attr) {
+  // Para formatear el input a que sea de maximo 60 y minimo 0
+  if (attr == "min") {
+    state.minEditTime = getTwoDigitNumber(state.minEditTime);
+  } else {
+    state.secEditTime = getTwoDigitNumber(state.secEditTime);
+  }
+  // Actualizamos el tiempo compuesto de edición
+  state.totalSecondsEdit = parseInt(state.minEditTime) * 60 + parseInt(state.secEditTime);
+  state.totalTimeEdit = intToTime(state.totalSecondsEdit);
+  // Actualizamos el tiempo sugerido por participante
+  countdown.value = (state.totalSecondsEdit)/state.participants.length;
+}
+
 onMounted(async () => {
   pendientesBlock.value.statusLoading();
   state.participants = await getParticipants();
   pendientesBlock.value.statusNormal();
+  state.totalSecondsEdit = countdown.value * state.participants.length;
+  state.totalTimeEdit = intToTime(state.totalSecondsEdit); // "MM:SS"
+  state.minEditTime = getMinutesfromInt(state.totalSecondsEdit); // "MM"
+  state.secEditTime = getSecondsfromInt(state.totalSecondsEdit); // "SS"
 });
 </script>
 
 <template>
 
-  <BaseBlock class="h-100 mb-3" ref="baseClock">
+  <BaseBlock class="h-100 mb-0"
+    ref="baseClock"
+    :headerClass="'border-bottom'"
+    :headerStyle="{'border-bottom-color': '#98a3b47d !important'}">
     <template #title>
-      <div class="content mb-0 pb-0">
-        Tiempo sugerido {{ intToTime(countdown) }}
+      <div class="content d-flex justify-content-between mb-0 pb-0 pt-0">
+        <div>
+          Tiempo sugerido por participante {{ intToTime(countdown) }}
+        </div>
+        <div>
+          <button type="button" class="btn-block-option" @click="toggleTimeEdit">
+            <font-awesome-icon :icon="['fas', 'pencil']" />
+          </button>
+        </div>
       </div>
     </template>
-    <template #content v-if="state.currentParticipant !== null">
+    <template #content v-if="state.editingSuggestedTime">
+      <div class="d-flex p-4 justify-content-center align-items-center flex-column block-header-default">
+        <div>
+          <input type="number" min="0" step="1" max="60" class="p-0"
+            @input="changeCountdown($event, 'min')"
+            v-model="state.minEditTime"/>
+          (M):
+          <input type="number" min="0" max="59" step="1" class="p-0"
+            @input="changeCountdown($event, 'sec')"
+            v-model="state.secEditTime"/>
+          (s)
+        </div>
+        <p class="mb-0 mt-1">Cantidad de participantes: {{state.participants.length}} </p>
+      </div>
+    </template>
+    <template #content v-else>
+    </template>
+  </BaseBlock>
+  <BaseBlock v-if="state.currentParticipant !== null"
+    class="h-100 mb-3 border border-secundary"
+    ref="ActiveParticipantBlock"
+    :rounded="false">
+    <template #content>
       <div class="content">
         <Participant :participant="state.currentParticipant" :highlight="true" @startTime="startTime"
           @setParticipantAsReady="setParticipantAsReady" />
@@ -133,8 +193,6 @@ onMounted(async () => {
         </div>
       </div>
     </template>
-    <template #content v-else>
-    </template>
   </BaseBlock>
 
   <div class="content">
@@ -142,7 +200,7 @@ onMounted(async () => {
       <div class="col-md-6 col-sm-12">
         <BaseBlock class="h-100 mb-3" ref="pendientesBlock">
           <template #title>
-            <font-awesome-icon :icon="['fas', 'clock']" /> Participantes
+            <font-awesome-icon :icon="['fas', 'clock']" /> Participantes pendientes ({{pendingParticipants.length}})
           </template>
           <template #options>
             <button type="button" class="btn-block-option" @click="shuffleParticipants">
@@ -159,11 +217,11 @@ onMounted(async () => {
         <BaseBlock class="h-100 mb-3">
           <template #title>
             <font-awesome-icon :icon="['fas', 'calendar-check']" /> Listos ({{
-            readyParticipants.length
+                readyParticipants.length
             }})
           </template>
           <template #subtitle>
-            <small>Total time {{ totalTime }}</small>
+            <small>Tiempo total {{ totalTime }}</small>
           </template>
           <template v-for="participant in readyParticipants" :key="participant.id">
             <Participant :participant="participant" @setParticipantAsNotReady="setParticipantAsNotReady" />
@@ -173,7 +231,7 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
+<style lang="scss">
 .badge-time {
   width: 1000px;
 }

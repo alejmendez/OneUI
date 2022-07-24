@@ -11,9 +11,11 @@ import {
   faUsers,
   faHourglass,
   faClock,
+  faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faPlay);
+library.add(faPencil);
 library.add(faStop);
 library.add(faCheck);
 library.add(faUndo);
