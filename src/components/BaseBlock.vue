@@ -175,6 +175,11 @@ const props = defineProps({
     defaul: false,
     description: "Enable the close mode button",
   },
+  headerStyle: {
+    type: Object,
+    defaul: {},
+    description: "Add style tag to header",
+  },
 });
 
 // Reactive state
@@ -345,6 +350,7 @@ defineExpose({
       class="block-header"
       v-if="$slots.header || $slots.title || title"
       :class="classContainerHeader"
+      :style="headerStyle"
     >
       <slot name="header">
         <h3 class="block-title">
