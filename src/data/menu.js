@@ -7,8 +7,13 @@
 export default {
   main: [
     {
-      name: "Tablero de daily's",
-      to: "board",
+      name: "Tablero de daily's Asistencia",
+      to: "board_asistencia",
+      icon: "si si-speedometer",
+    },
+    {
+      name: "Tablero de daily's Empleado",
+      to: "board_empleado",
       icon: "si si-speedometer",
     },
   ],

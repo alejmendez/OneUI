@@ -4,6 +4,13 @@ import { intToTime, getMinutesfromInt, getSecondsfromInt, getTwoDigitNumber} fro
 import { StatusTypes, getParticipants } from "@/services/board";
 import Participant from "./components/Participant.vue";
 
+const props = defineProps({
+  team: {
+    type: String,
+    description: "Para destacar un participante en especifico",
+  },
+});
+
 // Para el tiempo que lleva actualmente el participante
 let timer = ref(0);
 let intervalTime = null;
@@ -125,7 +132,7 @@ function changeCountdown(e, attr) {
 
 onMounted(async () => {
   pendientesBlock.value.statusLoading();
-  state.participants = await getParticipants();
+  state.participants = await getParticipants(props.team);
   pendientesBlock.value.statusNormal();
   state.totalSecondsEdit = countdown.value * state.participants.length;
   state.totalTimeEdit = intToTime(state.totalSecondsEdit); // "MM:SS"
@@ -135,7 +142,6 @@ onMounted(async () => {
 </script>
 
 <template>
-
   <BaseBlock class="h-100 mb-0"
     ref="baseClock"
     :headerClass="'border-bottom'"

@@ -6,28 +6,35 @@ const StatusTypes = {
   READY: "ready",
 };
 
-const participantsList = [
+const participantsListEmp = [
   "César Encina",
-  "Alejandro Mendez",
   "Edgar Ramos",
-  "Cristian Mendoza",
-  "Carlos Mujica",
   "Daniela Pellegrini",
-  "Enrique Cruz",
   "José Lara",
   "Jorge Montero",
-  "Jean Pierre Rodríguez",
   "Natalia Sandoval",
   "Ramiro Galvez",
   "Sebastián He",
   "Valentina Contreras",
-  "Diego Marin",
-  "Julio Arismendi",
   "Joaquin Couyoumdjian",
 ];
 
-const getParticipants = async () => {
-  return participantsList
+const participantsListAsis = [
+  "Alejandro Mendez",
+  "Cristian Mendoza",
+  "Carlos Mujica",
+  "Daniela Pellegrini",
+  "Enrique Cruz",
+  "Jorge Montero",
+  "Valentina Contreras",
+  "Diego Marin",
+  "Julio Arismendi",
+];
+
+const participantsHash = {empleado: participantsListEmp, asistencia: participantsListAsis}
+
+const getParticipants = async (team) => {
+  return participantsHash[team]
     .map((participant) => {
       return {
         id: uuidv4(),

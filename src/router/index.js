@@ -45,7 +45,8 @@ const Error404 = () => import("@/views/errors/404View.vue");
 const Error500 = () => import("@/views/errors/500View.vue");
 const Error503 = () => import("@/views/errors/503View.vue");
 
-const Board = () => import("@/views/board/BoardView.vue");
+const DailysBoardEmpleado = () => import("@/views/board/BoardViewWrapper.vue");
+const DailysBoardAsistencia = () => import("@/views/board/BoardViewWrapper.vue");
 
 const routes = [
   {
@@ -55,18 +56,32 @@ const routes = [
       {
         path: "",
         name: "landing",
-        component: Board,
+        component: DailysBoardEmpleado,
+        props: { team: 'empleado' }
       },
     ],
   },
   {
-    path: "/board",
+    path: "/board_empleado",
     component: LayoutBackend,
     children: [
       {
-        path: "/board",
-        name: "board",
-        component: Board,
+        path: "/board_empleado",
+        name: "board_empleado",
+        component: DailysBoardEmpleado,
+        props: { team: 'empleado' }
+      },
+    ],
+  },
+  {
+    path: "/board_asistencia",
+    component: LayoutBackend,
+    children: [
+      {
+        path: "/board_asistencia",
+        name: "board_asistencia",
+        component: DailysBoardAsistencia,
+        props: { team: 'asistencia' }
       },
     ],
   },
